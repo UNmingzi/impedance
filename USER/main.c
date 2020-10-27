@@ -17,8 +17,6 @@ char str[30];
 extern u32 SysTimer;
 extern u32 Keycode;
 extern	u8 _return;
-
-int a;
 	
 int main(void)
 {

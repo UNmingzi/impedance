@@ -89,10 +89,10 @@ float DA5933_Get_Rs(void)
 	float Rs,re,im;
 	
 //	AD5933_Sweep(30000,200,2,AD5933_OUTPUT_2V,AD5933_Gain_1,AD5933_Fre_Rep);
-	AD5933_Sweep((float)AD5933_Frequency,1,4,AD5933_OUTPUT_2V,AD5933_Gain_1,AD5933_Fre_UP);
+	AD5933_Sweep((float)AD5933_Frequency,1,1,AD5933_OUTPUT_2V,AD5933_Gain_1,AD5933_Fre_UP);
 
 //	Rs=Get_resistance(40);
-	Rs=Get_resistance(4);
+	Rs=Get_resistance(1);
 	re=Rs*cos(rads[0]);
 	im=Rs*sin(rads[0]);
 	return Rs;

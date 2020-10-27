@@ -1,6 +1,6 @@
 Dependencies for Project 'Template', Target 'Template': (DO NOT MODIFY !)
 CompilerVersion: 5060960::V5.06 update 7 (build 960)::.\ARMCC
-F (.\main.c)(0x5F93E655)(-c --cpu Cortex-M4.fp.sp -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I ..\CORE -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\USER -I ..\FWLIB\inc -I ..\HARDWARE -I ..\SYSTEM\timer-ID:\keil\ARM\RV31\INC-ID:\keil\ARM\CMSIS\Include-ID:\keil\ARM\INC\ST\STM32F4xx-D__UVISION_VERSION="532" -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER -DSTM32F40_41xxx-o ..\obj\main.o --omf_browse ..\obj\main.crf --depend ..\obj\main.d)
+F (.\main.c)(0x5F97F731)(-c --cpu Cortex-M4.fp.sp -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I ..\CORE -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\USER -I ..\FWLIB\inc -I ..\HARDWARE -I ..\SYSTEM\timer-ID:\keil\ARM\RV31\INC-ID:\keil\ARM\CMSIS\Include-ID:\keil\ARM\INC\ST\STM32F4xx-D__UVISION_VERSION="532" -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER -DSTM32F40_41xxx-o ..\obj\main.o --omf_browse ..\obj\main.crf --depend ..\obj\main.d)
 I (stm32f4xx.h)(0x542BA483)
 I (..\CORE\core_cm4.h)(0x53C7D530)
 I (D:\keil\ARM\ARMCC\include\stdint.h)(0x5F63877C)
@@ -43,7 +43,7 @@ I (..\SYSTEM\delay\delay.h)(0x53B7797C)
 I (..\SYSTEM\timer\timer.h)(0x5F818C6E)
 I (D:\keil\ARM\ARMCC\include\string.h)(0x5F63878A)
 I (D:\keil\ARM\ARMCC\include\math.h)(0x5F63877C)
-I (..\HARDWARE\I2C.h)(0x5F8E51ED)
+I (..\HARDWARE\I2C.h)(0x5F97F766)
 I (..\HARDWARE\KEY.h)(0x5F8E57D0)
 I (..\HARDWARE\LCD.h)(0x5F7C2F99)
 I (..\HARDWARE\LED.h)(0x5F806CA8)
@@ -1505,8 +1505,8 @@ I (..\FWLIB\inc\stm32f4xx_dac.h)(0x53DBAFAD)
 I (..\FWLIB\inc\stm32f4xx_dcmi.h)(0x53DBAFAD)
 I (..\FWLIB\inc\stm32f4xx_fsmc.h)(0x53DBAFAD)
 I (..\USER\stm32f4xx_it.h)(0x5426CDC1)
-F (..\HARDWARE\I2C.c)(0x5F8E51ED)(-c --cpu Cortex-M4.fp.sp -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I ..\CORE -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\USER -I ..\FWLIB\inc -I ..\HARDWARE -I ..\SYSTEM\timer-ID:\keil\ARM\RV31\INC-ID:\keil\ARM\CMSIS\Include-ID:\keil\ARM\INC\ST\STM32F4xx-D__UVISION_VERSION="532" -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER -DSTM32F40_41xxx-o ..\obj\i2c.o --omf_browse ..\obj\i2c.crf --depend ..\obj\i2c.d)
-I (..\HARDWARE\I2C.h)(0x5F8E51ED)
+F (..\HARDWARE\I2C.c)(0x5F980128)(-c --cpu Cortex-M4.fp.sp -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I ..\CORE -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\USER -I ..\FWLIB\inc -I ..\HARDWARE -I ..\SYSTEM\timer-ID:\keil\ARM\RV31\INC-ID:\keil\ARM\CMSIS\Include-ID:\keil\ARM\INC\ST\STM32F4xx-D__UVISION_VERSION="532" -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER -DSTM32F40_41xxx-o ..\obj\i2c.o --omf_browse ..\obj\i2c.crf --depend ..\obj\i2c.d)
+I (..\HARDWARE\I2C.h)(0x5F97F766)
 I (..\SYSTEM\sys\sys.h)(0x53B52F5F)
 I (..\USER\stm32f4xx.h)(0x542BA483)
 I (..\CORE\core_cm4.h)(0x53C7D530)
@@ -1656,7 +1656,7 @@ I (..\FWLIB\inc\stm32f4xx_can.h)(0x53DBAFAD)
 I (..\FWLIB\inc\stm32f4xx_dac.h)(0x53DBAFAD)
 I (..\FWLIB\inc\stm32f4xx_dcmi.h)(0x53DBAFAD)
 I (..\FWLIB\inc\stm32f4xx_fsmc.h)(0x53DBAFAD)
-F (..\HARDWARE\impedanceRead.c)(0x5F8EBB49)(-c --cpu Cortex-M4.fp.sp -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I ..\CORE -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\USER -I ..\FWLIB\inc -I ..\HARDWARE -I ..\SYSTEM\timer-ID:\keil\ARM\RV31\INC-ID:\keil\ARM\CMSIS\Include-ID:\keil\ARM\INC\ST\STM32F4xx-D__UVISION_VERSION="532" -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER -DSTM32F40_41xxx-o ..\obj\impedanceread.o --omf_browse ..\obj\impedanceread.crf --depend ..\obj\impedanceread.d)
+F (..\HARDWARE\impedanceRead.c)(0x5F9800D4)(-c --cpu Cortex-M4.fp.sp -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I ..\CORE -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\USER -I ..\FWLIB\inc -I ..\HARDWARE -I ..\SYSTEM\timer-ID:\keil\ARM\RV31\INC-ID:\keil\ARM\CMSIS\Include-ID:\keil\ARM\INC\ST\STM32F4xx-D__UVISION_VERSION="532" -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER -DSTM32F40_41xxx-o ..\obj\impedanceread.o --omf_browse ..\obj\impedanceread.crf --depend ..\obj\impedanceread.d)
 I (..\HARDWARE\impedanceRead.h)(0x5F8E51ED)
 I (..\SYSTEM\sys\sys.h)(0x53B52F5F)
 I (..\USER\stm32f4xx.h)(0x542BA483)
@@ -1693,7 +1693,7 @@ I (..\FWLIB\inc\stm32f4xx_can.h)(0x53DBAFAD)
 I (..\FWLIB\inc\stm32f4xx_dac.h)(0x53DBAFAD)
 I (..\FWLIB\inc\stm32f4xx_dcmi.h)(0x53DBAFAD)
 I (..\FWLIB\inc\stm32f4xx_fsmc.h)(0x53DBAFAD)
-I (..\HARDWARE\I2C.h)(0x5F8E51ED)
+I (..\HARDWARE\I2C.h)(0x5F97F766)
 I (D:\keil\ARM\ARMCC\include\math.h)(0x5F63877C)
 I (..\SYSTEM\delay\delay.h)(0x53B7797C)
 I (..\HARDWARE\KEY.h)(0x5F8E57D0)

@@ -77,9 +77,9 @@ void SendNACK(void)
 	SCL=0;
 	SDA_OUT();
 	SDA=1;
-	delay_us(Delay_IIC*2);
+	delay_us(Delay_IIC*1);
 	SCL=1;
-	delay_us(Delay_IIC*2);
+	delay_us(Delay_IIC*1);
 	SCL=0;
 }
 
@@ -88,9 +88,9 @@ void START(void)    // 启动数据总线
 	SDA_OUT();     //sda线输出
 	SDA=1;	  	  
 	SCL=1;
-	delay_us(Delay_IIC*4);
+	delay_us(Delay_IIC*1);
  	SDA=0;//START:when CLK is high,DATA change form high to low 
-	delay_us(Delay_IIC*4);
+	delay_us(Delay_IIC*1);
 	SCL=0;//钳住I2C总线，准备发送或接收数据 
 }
 
@@ -99,10 +99,10 @@ void STOP(void)
 	SDA_OUT();//sda线输出
 	SCL=0;
 	SDA=0;//STOP:when CLK is high DATA change form low to high
- 	delay_us(Delay_IIC*4);
+ 	delay_us(Delay_IIC*1);
 	SCL=1; 
 	SDA=1;//发送I2C总线结束信号
-	delay_us(Delay_IIC*4);		
+	delay_us(Delay_IIC*1);		
 }
 
 void SendByte(u8 txd)	// 发送一个字节数据子函数 
@@ -114,11 +114,11 @@ void SendByte(u8 txd)	// 发送一个字节数据子函数
     {              
         SDA=(txd&0x80)>>7;
         txd<<=1; 	  
-		delay_us(Delay_IIC*2);   //对TEA5767这三个延时都是必须的
+		delay_us(Delay_IIC*1);   //对TEA5767这三个延时都是必须的
 		SCL=1;
-		delay_us(Delay_IIC*2); 
+		delay_us(Delay_IIC*1); 
 		SCL=0;	
-		delay_us(Delay_IIC*2);
+		delay_us(Delay_IIC*1);
     }	 
 }
 
@@ -129,7 +129,7 @@ u8 ReadByte(void)  //读一个字节数据
     for(i=0;i<8;i++ )
 	{
         SCL=0; 
-        delay_us(Delay_IIC*2);
+        delay_us(Delay_IIC*1);
 		SCL=1;
         receive<<=1;
         if(READ_SDA)receive++;   
@@ -223,7 +223,7 @@ u16 AD5933_Tempter(void)
 		return Tm;
 }
 
-//float Scale_imp (uint SValue[3],uint IValue[3],uint NValue[2],uint CValue[2],float ki,int Ps);
+//float Scale_Imp (uint SValue[3],uint IValue[3],uint NValue[2],uint CValue[2],float ki,int Ps);
 float resistance[200];
 float rads[200];
 int 	AD5933_Dat_Re[200];
@@ -248,11 +248,12 @@ float Get_resistance(u16 num)
 	u16 i;
 	float navle;
 	Maopao_Paixu(resistance,num);
-	navle=resistance[0];
-	for(i=num/2-num/4;i<num/2+num/4;i++)
+//	navle=resistance[0];
+	for(i=0;i<num;i++)
 	{
-		navle=(navle+resistance[i])/2;
+		navle=navle+resistance[i];
 	}
+	navle = navle/num;
 //	return (double)navle*AD5933_Correction*AD5933_Frequency*AD5933_Freq_Comp_Coefficient;
 	return (double)navle*AD5933_Correction;
 	
@@ -285,10 +286,10 @@ SWeep_Rep			扫描模式
 							AD5933_Fre_UP 	递增频率
 							AD5933_Fre_Rep	重复频率
 */
+static u8 time;
 
 //AD5933_Sweep(30000,200,200,AD5933_OUTPUT_2V,AD5933_Gain_1,AD5933_Fre_UP);
 //	AD5933_Sweep(10000,1,40,AD5933_OUTPUT_2V,AD5933_Gain_1,AD5933_Fre_UP);
-
 float AD5933_Sweep (float Fre_Begin,float Fre_UP,u16 UP_Num,u16 OUTPUT_Vatage,u16 Gain,u16 SWeep_Rep)
 {
 	u8 SValue[3], IValue[3], NValue[2], CValue[2];
@@ -297,6 +298,8 @@ float AD5933_Sweep (float Fre_Begin,float Fre_UP,u16 UP_Num,u16 OUTPUT_Vatage,u1
 	Fre_To_Hex(Fre_UP,IValue);
 	NValue[0]=UP_Num>>8;
 	NValue[1]=UP_Num;
+	
+
 #ifdef AD5933_MCLK_USE_OUT
 	buf=OUTPUT_Vatage|Gain|SWeep_Rep|AD5933_OUT_MCLK;
 #else
@@ -305,110 +308,218 @@ float AD5933_Sweep (float Fre_Begin,float Fre_UP,u16 UP_Num,u16 OUTPUT_Vatage,u1
 	CValue[0]=buf>>8;
 	CValue[1]=buf;
 	
-	Scale_imp(SValue,IValue,NValue,CValue);
+	if(time == 0)
+	{
+		Scale_Imp_Init (SValue,IValue,NValue,CValue);
+		time++;
+	}
+	Scale_Imp(SValue,IValue,NValue,CValue);
 	return 0;
 }
 /*SValue[3]起始频率，IValue[3]频率增量，NValue[2]增量数，CValue[2]控制字，ki增益系数，Ps扫频为1重复为0*/
+void Scale_Imp_Init (u8 *SValue,u8 *IValue,u8 *NValue,u8 *CValue)
+{
+	int i,AddrTemp;
+	u8 Mode=CValue[0]&0x0f;
+	
+	Init_I2c();    //初始化I2C
 
-float Scale_imp (u8 *SValue,u8 *IValue,u8 *NValue,u8 *CValue)
+	AddrTemp=0X82; //初始化起始频率寄存器 0x82 0x83 0x84
+	for(i = 0;i <3;i++)
+	{
+		Write_Byte(AddrTemp,SValue[i]);
+		AddrTemp++;
+	}               
+	AddrTemp=0X85; //初始化频率增量寄存器 0x85 0x86 0x87
+	for(i = 0;i <3;i++)
+	{
+		Write_Byte(AddrTemp,IValue[i]);
+		AddrTemp++;
+	} 
+	AddrTemp=0X88; //初始化频率点数寄存器 0x88 0x89 最大511
+	for(i = 0;i <2;i++)
+	{
+		Write_Byte(AddrTemp,NValue[i]);
+		AddrTemp++;
+	} 
+
+}
+float Scale_Imp (u8 *SValue,u8 *IValue,u8 *NValue,u8 *CValue)
 {
 	int i,j,AddrTemp;
 	u8 Gain=((~CValue[0])&0x01)?5:1;
 	u8 SWeep_Rep=((CValue[0]&0xF0)==(AD5933_Fre_UP>>8))?1:0;
 	u8 Mode=CValue[0]&0x0f;
-	long ReadTemp,realArr[3],imageArr[3];
-                float magnitude;       	
+  long ReadTemp,realArr[3],imageArr[3];
+  float magnitude;       	
 //                uint start_f[3]={0X33,0X26,0X17};
 //                uint inc_f[3]={0,0,0X21};
 //                uint num_f[2]={0,0XC8};
 //                uint control[2]={0XB1,0X00};
 //								CValue[0]=Mode|AD5933_Standby;
-								j=0;
-                Init_I2c();    //初始化I2C
-   
-                AddrTemp=0X82; //初始化起始频率寄存器 0x82 0x83 0x84
-                for(i = 0;i <3;i++)
-                {
-    	Write_Byte(AddrTemp,SValue[i]);
-                AddrTemp++;
-                }               
-                AddrTemp=0X85; //初始化频率增量寄存器 0x85 0x86 0x87
-                for(i = 0;i <3;i++)
-                {
-    	Write_Byte(AddrTemp,IValue[i]);
-                AddrTemp++;
-                } 
-                AddrTemp=0X88; //初始化频率点数寄存器
-                for(i = 0;i <2;i++)
-                {
-    	Write_Byte(AddrTemp,NValue[i]);
-                AddrTemp++;
-                } 
-    //初始化控制寄存器，1011 0001 0000 0000待机模式，2V，一倍放大，内部时钟                                  
-                AddrTemp=0X80; 
-//                for(i = 0;i <2;i++)
-                {
-								Write_Byte(AddrTemp,Mode|(AD5933_Standby>>8));
-                AddrTemp++;
-								Write_Byte(AddrTemp,CValue[1]);
-                AddrTemp++;
-                }
-                 
-                Write_Byte(0x80,Mode|(AD5933_SYS_Init>>8));//控制寄存器写入初始化频率扫描命令
-								delay_ms(10);//fix me
-                Write_Byte(0X80,Mode|(AD5933_Begin_Fre_Scan>>8));//控制寄存器写入开始频率扫描命令
- while(1)
-{
-                while(1)
-                {
-                ReadTemp=Rece_Byte(0x8F);  //读取状态寄存器检查DFT是否完成
-//							ReadTemp=ReadTemp&0x07;
-                if (ReadTemp&0x02)
-                break;
-                }                  
-                realArr[0]=Rece_Byte(0x94);
-                realArr[1]=Rece_Byte(0x95);
-                realArr[2]=realArr[0]*0x100+realArr[1];
-                
-                imageArr[0]=Rece_Byte(0x96);
-                imageArr[1]=Rece_Byte(0x97);
-                imageArr[2]=imageArr[0]*0x100+imageArr[1];      
-								
-								rads[j]=atan2(imageArr[2],realArr[2])-0.00143485062;
+		j=0;
 
-                
-	if (realArr[2]>=0x8000)  //计算实部的原码(除符号位外，取反加一)
-	{
-                realArr[2]^=0xFFFF; 
-                realArr[2]^=0x8000; 
-								realArr[2]+=1;
-                realArr[2]^=0x8000;
-	}
-	if (imageArr[2]>=0x8000)  //计算虚部的原码(除符号位外，取反加一)
-	{
-                imageArr[2]^=0xFFFF; 
-                imageArr[2]^=0x8000; 
-								imageArr[2]+=1;
-                imageArr[2]^=0x8000;
-	}
-								AD5933_Dat_Re[j]=realArr[2];
-								AD5933_Dat_Im[j]=imageArr[2];
-                magnitude=sqrt(realArr[2]*realArr[2]+imageArr[2]*imageArr[2]);  //模值计算              
-                resistance[j++]=1/(magnitude*Gain);		 //阻抗计算
-								
-                ReadTemp=Rece_Byte(0x8F);  //读取状态寄存器检查频率扫描是否完成
-                if (ReadTemp&0x04)
-                break;
-                if (SWeep_Rep==1)
-                Write_Byte(0X80,CValue[0]);	//控制寄存器写入增加频率（跳到下一个频率点)的命令
-								else
-								Write_Byte(0X80,CValue[0]);	//控制寄存器写入重复当前频率点扫描	
+		//初始化控制寄存器，1011 0001 0000 0000待机模式，2V，一倍放大，内部时钟                                  
+		AddrTemp=0X80; 
+		
+		Write_Byte(AddrTemp,Mode|(AD5933_Standby>>8));
+		AddrTemp++;
+		Write_Byte(AddrTemp,CValue[1]);
+		AddrTemp++;
+	
+		Write_Byte(0x80,Mode|(AD5933_SYS_Init>>8));//控制寄存器写入初始化频率扫描命令 Initialize with start frequency
+//								delay_ms(10);//fix me
+		Write_Byte(0X80,Mode|(AD5933_Begin_Fre_Scan>>8));//控制寄存器写入开始频率扫描命令 Start frequency sweep
+while(1)
+{
+		while(1)
+		{
+		ReadTemp=Rece_Byte(0x8F);  //读取状态寄存器检查DFT是否完成
+//							ReadTemp=ReadTemp&0x07;
+		if (ReadTemp&0x02)
+		break;
+		}                  
+		realArr[0]=Rece_Byte(0x94);
+		realArr[1]=Rece_Byte(0x95);
+		realArr[2]=realArr[0]*0x100+realArr[1];
+		
+		imageArr[0]=Rece_Byte(0x96);
+		imageArr[1]=Rece_Byte(0x97);
+		imageArr[2]=imageArr[0]*0x100+imageArr[1];      
+		
+		rads[j]=atan2(imageArr[2],realArr[2])-0.00143485062;
+
+		
+if (realArr[2]>=0x8000)  //计算实部的原码(除符号位外，取反加一)
+{
+		realArr[2]^=0xFFFF; 
+		realArr[2]^=0x8000; 
+		realArr[2]+=1;
+		realArr[2]^=0x8000;
 }
-                Write_Byte(0X80,0XA1);	//进入掉电模式 Standby mode 2.0Vp-p typical PGA gain = 1
+if (imageArr[2]>=0x8000)  //计算虚部的原码(除符号位外，取反加一)
+{
+		imageArr[2]^=0xFFFF; 
+		imageArr[2]^=0x8000; 
+		imageArr[2]+=1;
+		imageArr[2]^=0x8000;
+}
+		AD5933_Dat_Re[j]=realArr[2];
+		AD5933_Dat_Im[j]=imageArr[2];
+		magnitude=sqrt(realArr[2]*realArr[2]+imageArr[2]*imageArr[2]);  //模值计算              
+		resistance[j++]=1/(magnitude*Gain);		 //阻抗计算
+		
+		ReadTemp=Rece_Byte(0x8F);  //读取状态寄存器检查频率扫描是否完成
+		if (ReadTemp&0x04)
+		break;
+		if (SWeep_Rep==1)
+		Write_Byte(0X80,CValue[0]);	//控制寄存器写入增加频率（跳到下一个频率点)的命令
+		else
+		Write_Byte(0X80,CValue[0]);	//控制寄存器写入重复当前频率点扫描	
+}
+		Write_Byte(0X80,0XA1);	//进入掉电模式 Standby mode 2.0Vp-p typical PGA gain = 1
 return magnitude;
 }
 
+///*SValue[3]起始频率，IValue[3]频率增量，NValue[2]增量数，CValue[2]控制字，ki增益系数，Ps扫频为1重复为0*/
 
+//float Scale_Imp (u8 *SValue,u8 *IValue,u8 *NValue,u8 *CValue)
+//{
+//	int i,j,AddrTemp;
+//	u8 Gain=((~CValue[0])&0x01)?5:1;
+//	u8 SWeep_Rep=((CValue[0]&0xF0)==(AD5933_Fre_UP>>8))?1:0;
+//	u8 Mode=CValue[0]&0x0f;
+//	long ReadTemp,realArr[3],imageArr[3];
+//                float magnitude;       	
+////                uint start_f[3]={0X33,0X26,0X17};
+////                uint inc_f[3]={0,0,0X21};
+////                uint num_f[2]={0,0XC8};
+////                uint control[2]={0XB1,0X00};
+////								CValue[0]=Mode|AD5933_Standby;
+//								j=0;
+//                Init_I2c();    //初始化I2C
+//   
+//                AddrTemp=0X82; //初始化起始频率寄存器 0x82 0x83 0x84
+//                for(i = 0;i <3;i++)
+//                {
+//    	Write_Byte(AddrTemp,SValue[i]);
+//                AddrTemp++;
+//                }               
+//                AddrTemp=0X85; //初始化频率增量寄存器 0x85 0x86 0x87
+//                for(i = 0;i <3;i++)
+//                {
+//    	Write_Byte(AddrTemp,IValue[i]);
+//                AddrTemp++;
+//                } 
+//                AddrTemp=0X88; //初始化频率点数寄存器 0x88 0x89 最大511
+//                for(i = 0;i <2;i++)
+//                {
+//    	Write_Byte(AddrTemp,NValue[i]);
+//                AddrTemp++;
+//                } 
+//    //初始化控制寄存器，1011 0001 0000 0000待机模式，2V，一倍放大，内部时钟                                  
+//                AddrTemp=0X80; 
+////                for(i = 0;i <2;i++)
+//                {
+//								Write_Byte(AddrTemp,Mode|(AD5933_Standby>>8));
+//                AddrTemp++;
+//								Write_Byte(AddrTemp,CValue[1]);
+//                AddrTemp++;
+//                }
+//                 
+//                Write_Byte(0x80,Mode|(AD5933_SYS_Init>>8));//控制寄存器写入初始化频率扫描命令 Initialize with start frequency
+////								delay_ms(10);//fix me
+//                Write_Byte(0X80,Mode|(AD5933_Begin_Fre_Scan>>8));//控制寄存器写入开始频率扫描命令 Start frequency sweep
+// while(1)
+//{
+//                while(1)
+//                {
+//                ReadTemp=Rece_Byte(0x8F);  //读取状态寄存器检查DFT是否完成
+////							ReadTemp=ReadTemp&0x07;
+//                if (ReadTemp&0x02)
+//                break;
+//                }                  
+//                realArr[0]=Rece_Byte(0x94);
+//                realArr[1]=Rece_Byte(0x95);
+//                realArr[2]=realArr[0]*0x100+realArr[1];
+//                
+//                imageArr[0]=Rece_Byte(0x96);
+//                imageArr[1]=Rece_Byte(0x97);
+//                imageArr[2]=imageArr[0]*0x100+imageArr[1];      
+//								
+//								rads[j]=atan2(imageArr[2],realArr[2])-0.00143485062;
+
+//                
+//	if (realArr[2]>=0x8000)  //计算实部的原码(除符号位外，取反加一)
+//	{
+//                realArr[2]^=0xFFFF; 
+//                realArr[2]^=0x8000; 
+//								realArr[2]+=1;
+//                realArr[2]^=0x8000;
+//	}
+//	if (imageArr[2]>=0x8000)  //计算虚部的原码(除符号位外，取反加一)
+//	{
+//                imageArr[2]^=0xFFFF; 
+//                imageArr[2]^=0x8000; 
+//								imageArr[2]+=1;
+//                imageArr[2]^=0x8000;
+//	}
+//								AD5933_Dat_Re[j]=realArr[2];
+//								AD5933_Dat_Im[j]=imageArr[2];
+//                magnitude=sqrt(realArr[2]*realArr[2]+imageArr[2]*imageArr[2]);  //模值计算              
+//                resistance[j++]=1/(magnitude*Gain);		 //阻抗计算
+//								
+//                ReadTemp=Rece_Byte(0x8F);  //读取状态寄存器检查频率扫描是否完成
+//                if (ReadTemp&0x04)
+//                break;
+//                if (SWeep_Rep==1)
+//                Write_Byte(0X80,CValue[0]);	//控制寄存器写入增加频率（跳到下一个频率点)的命令
+//								else
+//								Write_Byte(0X80,CValue[0]);	//控制寄存器写入重复当前频率点扫描	
+//}
+//                Write_Byte(0X80,0XA1);	//进入掉电模式 Standby mode 2.0Vp-p typical PGA gain = 1
+//return magnitude;
+//}
 //GPIO 通用设置
 //GPIOx:GPIOA~GPIOI.
 //BITx:0X0000~0XFFFF,位设置,每个位代表一个 IO,
