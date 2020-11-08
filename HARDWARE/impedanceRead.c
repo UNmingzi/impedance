@@ -26,22 +26,22 @@ void Get_Rs(u32 Key_Value, u8* Task_ID)
 	
 	Rs=DA5933_Get_Rs();
 
-//	USART_OUT(UART4,(uint8_t *)"outT:\t%d\t",time_ms);
+	USART_OUT(UART4,(uint8_t *)"T:\t%d\t",time_ms);
 
-//	if(Rs>1000000)
-//	{
-//		sprintf(str,"%03.05f",Rs/1000000);
-//		USART_OUT(UART4,(uint8_t *)"%s\tMohm\r\n",str);
+	if(Rs>1000000)
+	{
+		sprintf(str,"%03.05f",Rs/1000000);
+		USART_OUT(UART4,(uint8_t *)"%s\tMohm\r\n",str);
 
-//	}else	if(Rs>1000)
-//	{
-//		sprintf(str,"%03.05f",Rs/1000);
-//		USART_OUT(UART4,(uint8_t *)"%s\tKohm\r\n",str);
-//	}else if(Rs<1000)
-//	{
-//		sprintf(str,"%03.05f",Rs);
-//		USART_OUT(UART4,(uint8_t *)"%s\tohm\r\n",str);
-//	}
+	}else	if(Rs>1000)
+	{
+		sprintf(str,"%03.05f",Rs/1000);
+		USART_OUT(UART4,(uint8_t *)"%s\tKohm\r\n",str);
+	}else if(Rs<1000)
+	{
+		sprintf(str,"%03.05f",Rs);
+		USART_OUT(UART4,(uint8_t *)"%s\tohm\r\n",str);
+	}
 }
 void Get_C(u32 Key_Value, u8* Task_ID)
 {

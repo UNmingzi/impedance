@@ -375,8 +375,7 @@ float Scale_Imp (u8 *SValue,u8 *IValue,u8 *NValue,u8 *CValue)
 		Write_Byte(0x80,Mode|(AD5933_SYS_Init>>8));//控制寄存器写入初始化频率扫描命令 Initialize with start frequency
 //								delay_ms(10);//fix me
 		Write_Byte(0X80,Mode|(AD5933_Begin_Fre_Scan>>8));//控制寄存器写入开始频率扫描命令 Start frequency sweep
-while(1)
-{
+		
 		while(1)
 		{
 		ReadTemp=Rece_Byte(0x8F);  //读取状态寄存器检查DFT是否完成
@@ -388,9 +387,9 @@ while(1)
 		realArr[1]=Rece_Byte(0x95);
 		realArr[2]=realArr[0]*0x100+realArr[1];
 		
-//		imageArr[0]=Rece_Byte(0x96);
-//		imageArr[1]=Rece_Byte(0x97);
-//		imageArr[2]=imageArr[0]*0x100+imageArr[1];      
+		imageArr[0]=Rece_Byte(0x96);
+		imageArr[1]=Rece_Byte(0x97);
+		imageArr[2]=imageArr[0]*0x100+imageArr[1];      
 		
 		rads[j]=atan2(imageArr[2],realArr[2])-0.00143485062;
 
@@ -412,40 +411,18 @@ if (imageArr[2]>=0x8000)  //计算虚部的原码(除符号位外，取反加一)
 		AD5933_Dat_Re[j]=realArr[2];
 		AD5933_Dat_Im[j]=imageArr[2];
 		magnitude=sqrt(realArr[2]*realArr[2]+imageArr[2]*imageArr[2]);  //模值计算              
-		resistance[j]=1/(magnitude*Gain);		 //阻抗计算
-		
-	USART_OUT(UART4,(uint8_t *)"T:\t%d\t",time_ms);
-
-	if(resistance[j]*AD5933_Correction>100000000)
-	{
-		USART_OUT(UART4,(uint8_t *)"MAX\tMohm\r\n");
-	}else if(resistance[j]*AD5933_Correction>1000000)
-	{
-		sprintf(str,"%03.05f",resistance[j]*AD5933_Correction/1000000);
-		USART_OUT(UART4,(uint8_t *)"%s\tMohm\r\n",str);
-	}else	if(resistance[j]*AD5933_Correction>1000)
-	{
-		sprintf(str,"%03.05f",resistance[j]*AD5933_Correction/1000);
-		USART_OUT(UART4,(uint8_t *)"%s\tKohm\r\n",str);
-	}else if(resistance[j]*AD5933_Correction<1000)
-	{
-		sprintf(str,"%03.05f",resistance[j]*AD5933_Correction);
-		USART_OUT(UART4,(uint8_t *)"%s\tohm\r\n",str);
-	}
+		resistance[j++]=1/(magnitude*Gain);		 //阻抗计算
 	
 		ReadTemp=Rece_Byte(0x8F);  //读取状态寄存器检查频率扫描是否完成
-		if (ReadTemp&0x04)
-		break;
+//		if (ReadTemp&0x04)
+//		break;
 		if (SWeep_Rep==1)
 		Write_Byte(0X80,CValue[0]);	//控制寄存器写入增加频率（跳到下一个频率点)的命令
 		else
 		Write_Byte(0X80,CValue[0]);	//控制寄存器写入重复当前频率点扫描	
-//}
+
+//}	
 //		Write_Byte(0X80,0XA1);	//进入掉电模式 Standby mode 2.0Vp-p typical PGA gain = 1
-	
-	j++;
-}	
-		Write_Byte(0X80,0XA1);	//进入掉电模式 Standby mode 2.0Vp-p typical PGA gain = 1
 	
 	return magnitude;
 }

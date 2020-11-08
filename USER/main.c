@@ -17,7 +17,7 @@ char str[30];
 extern u32 SysTimer;
 extern u32 Keycode;
 extern	u8 _return;
-	
+
 int main(void)
 {
 	
@@ -32,6 +32,7 @@ int main(void)
 	while(1)
 	{
 //		Get_C(0,0);
+
 		Get_Rs(0,0);
 		
 	}
