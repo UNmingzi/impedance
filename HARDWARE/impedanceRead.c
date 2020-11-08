@@ -26,22 +26,22 @@ void Get_Rs(u32 Key_Value, u8* Task_ID)
 	
 	Rs=DA5933_Get_Rs();
 
-	USART_OUT(UART4,(uint8_t *)"T:\t%d\t",time_ms);
+//	USART_OUT(UART4,(uint8_t *)"outT:\t%d\t",time_ms);
 
-	if(Rs>1000000)
-	{
-		sprintf(str,"%03.05f",Rs/1000000);
-		USART_OUT(UART4,(uint8_t *)"%s\tMohm\r\n",str);
+//	if(Rs>1000000)
+//	{
+//		sprintf(str,"%03.05f",Rs/1000000);
+//		USART_OUT(UART4,(uint8_t *)"%s\tMohm\r\n",str);
 
-	}else	if(Rs>1000)
-	{
-		sprintf(str,"%03.05f",Rs/1000);
-		USART_OUT(UART4,(uint8_t *)"%s\tKohm\r\n",str);
-	}else if(Rs<1000)
-	{
-		sprintf(str,"%03.05f",Rs);
-		USART_OUT(UART4,(uint8_t *)"%s\tohm\r\n",str);
-	}
+//	}else	if(Rs>1000)
+//	{
+//		sprintf(str,"%03.05f",Rs/1000);
+//		USART_OUT(UART4,(uint8_t *)"%s\tKohm\r\n",str);
+//	}else if(Rs<1000)
+//	{
+//		sprintf(str,"%03.05f",Rs);
+//		USART_OUT(UART4,(uint8_t *)"%s\tohm\r\n",str);
+//	}
 }
 void Get_C(u32 Key_Value, u8* Task_ID)
 {
@@ -69,19 +69,19 @@ void Get_L(u32 Key_Value, u8* Task_ID)
 	
 	L=DA5933_Get_L();
 	
-	if(L>1000000)
-	{
-		sprintf(str,"%03.05f",L/1000000);
-		USART_OUT(UART4,(uint8_t *)"%s\tmH\r\n",str);
-	}else	if(L>1000)
-	{
-		sprintf(str,"%03.05f",L/1000);
-		USART_OUT(UART4,(uint8_t *)"%s\tuH\r\n",str);
-	}else if(L<1000)
-	{
-		sprintf(str,"%03.05f",L);
-		USART_OUT(UART4,(uint8_t *)"%s\tnH\r\n",L*10);
-	}
+//	if(L>1000000)
+//	{
+//		sprintf(str,"%03.05f",L/1000000);
+//		USART_OUT(UART4,(uint8_t *)"%s\tmH\r\n",str);
+//	}else	if(L>1000)
+//	{
+//		sprintf(str,"%03.05f",L/1000);
+//		USART_OUT(UART4,(uint8_t *)"%s\tuH\r\n",str);
+//	}else if(L<1000)
+//	{
+//		sprintf(str,"%03.05f",L);
+//		USART_OUT(UART4,(uint8_t *)"%s\tnH\r\n",L*10);
+//	}
 }
 //¶ÁÈ¡×è¿¹Öµ
 float DA5933_Get_Rs(void)
@@ -89,7 +89,7 @@ float DA5933_Get_Rs(void)
 	float Rs,re,im;
 	
 //	AD5933_Sweep(30000,200,2,AD5933_OUTPUT_2V,AD5933_Gain_1,AD5933_Fre_Rep);
-	AD5933_Sweep((float)AD5933_Frequency,1,1,AD5933_OUTPUT_2V,AD5933_Gain_1,AD5933_Fre_UP);
+	AD5933_Sweep((float)AD5933_Frequency,1,1,AD5933_OUTPUT_2V,AD5933_Gain_1,AD5933_Fre_Rep);
 
 //	Rs=Get_resistance(40);
 	Rs=Get_resistance(1);

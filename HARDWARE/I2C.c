@@ -1,6 +1,11 @@
 #include "I2C.h"
 #include "delay.h"
 #include "impedanceRead.h"
+#include "stdio.h"
+#include "usart.h"
+extern char str[30];
+extern int time_ms;
+
 void Init_I2c( void )      //初始化I2C
 {
 	GPIO_InitTypeDef GPIO_InitStructure;
@@ -383,9 +388,9 @@ while(1)
 		realArr[1]=Rece_Byte(0x95);
 		realArr[2]=realArr[0]*0x100+realArr[1];
 		
-		imageArr[0]=Rece_Byte(0x96);
-		imageArr[1]=Rece_Byte(0x97);
-		imageArr[2]=imageArr[0]*0x100+imageArr[1];      
+//		imageArr[0]=Rece_Byte(0x96);
+//		imageArr[1]=Rece_Byte(0x97);
+//		imageArr[2]=imageArr[0]*0x100+imageArr[1];      
 		
 		rads[j]=atan2(imageArr[2],realArr[2])-0.00143485062;
 
@@ -407,8 +412,27 @@ if (imageArr[2]>=0x8000)  //计算虚部的原码(除符号位外，取反加一)
 		AD5933_Dat_Re[j]=realArr[2];
 		AD5933_Dat_Im[j]=imageArr[2];
 		magnitude=sqrt(realArr[2]*realArr[2]+imageArr[2]*imageArr[2]);  //模值计算              
-		resistance[j++]=1/(magnitude*Gain);		 //阻抗计算
+		resistance[j]=1/(magnitude*Gain);		 //阻抗计算
 		
+	USART_OUT(UART4,(uint8_t *)"T:\t%d\t",time_ms);
+
+	if(resistance[j]*AD5933_Correction>100000000)
+	{
+		USART_OUT(UART4,(uint8_t *)"MAX\tMohm\r\n");
+	}else if(resistance[j]*AD5933_Correction>1000000)
+	{
+		sprintf(str,"%03.05f",resistance[j]*AD5933_Correction/1000000);
+		USART_OUT(UART4,(uint8_t *)"%s\tMohm\r\n",str);
+	}else	if(resistance[j]*AD5933_Correction>1000)
+	{
+		sprintf(str,"%03.05f",resistance[j]*AD5933_Correction/1000);
+		USART_OUT(UART4,(uint8_t *)"%s\tKohm\r\n",str);
+	}else if(resistance[j]*AD5933_Correction<1000)
+	{
+		sprintf(str,"%03.05f",resistance[j]*AD5933_Correction);
+		USART_OUT(UART4,(uint8_t *)"%s\tohm\r\n",str);
+	}
+	
 		ReadTemp=Rece_Byte(0x8F);  //读取状态寄存器检查频率扫描是否完成
 		if (ReadTemp&0x04)
 		break;
@@ -416,9 +440,14 @@ if (imageArr[2]>=0x8000)  //计算虚部的原码(除符号位外，取反加一)
 		Write_Byte(0X80,CValue[0]);	//控制寄存器写入增加频率（跳到下一个频率点)的命令
 		else
 		Write_Byte(0X80,CValue[0]);	//控制寄存器写入重复当前频率点扫描	
-}
+//}
+//		Write_Byte(0X80,0XA1);	//进入掉电模式 Standby mode 2.0Vp-p typical PGA gain = 1
+	
+	j++;
+}	
 		Write_Byte(0X80,0XA1);	//进入掉电模式 Standby mode 2.0Vp-p typical PGA gain = 1
-return magnitude;
+	
+	return magnitude;
 }
 
 ///*SValue[3]起始频率，IValue[3]频率增量，NValue[2]增量数，CValue[2]控制字，ki增益系数，Ps扫频为1重复为0*/

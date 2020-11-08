@@ -39,3 +39,5 @@
 ..\obj\i2c.o: D:\keil\ARM\ARMCC\Bin\..\include\math.h
 ..\obj\i2c.o: ..\SYSTEM\delay\delay.h
 ..\obj\i2c.o: ..\HARDWARE\impedanceRead.h
+..\obj\i2c.o: D:\keil\ARM\ARMCC\Bin\..\include\stdio.h
+..\obj\i2c.o: ..\SYSTEM\usart\usart.h

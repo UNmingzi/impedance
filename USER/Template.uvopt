@@ -204,9 +204,9 @@
         <Bp>
           <Number>0</Number>
           <Type>0</Type>
-          <LineNumber>314</LineNumber>
+          <LineNumber>377</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134220212</Address>
+          <Address>134222516</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -215,7 +215,71 @@
           <BreakIfRCount>1</BreakIfRCount>
           <Filename>..\HARDWARE\I2C.c</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\\Template\../HARDWARE/I2C.c\314</Expression>
+          <Expression>\\Template\../HARDWARE/I2C.c\377</Expression>
+        </Bp>
+        <Bp>
+          <Number>1</Number>
+          <Type>0</Type>
+          <LineNumber>375</LineNumber>
+          <EnabledFlag>1</EnabledFlag>
+          <Address>134222514</Address>
+          <ByteObject>0</ByteObject>
+          <HtxType>0</HtxType>
+          <ManyObjects>0</ManyObjects>
+          <SizeOfObject>0</SizeOfObject>
+          <BreakByAccess>0</BreakByAccess>
+          <BreakIfRCount>1</BreakIfRCount>
+          <Filename>..\HARDWARE\I2C.c</Filename>
+          <ExecCommand></ExecCommand>
+          <Expression>\\Template\../HARDWARE/I2C.c\375</Expression>
+        </Bp>
+        <Bp>
+          <Number>2</Number>
+          <Type>0</Type>
+          <LineNumber>375</LineNumber>
+          <EnabledFlag>1</EnabledFlag>
+          <Address>134222532</Address>
+          <ByteObject>0</ByteObject>
+          <HtxType>0</HtxType>
+          <ManyObjects>0</ManyObjects>
+          <SizeOfObject>0</SizeOfObject>
+          <BreakByAccess>0</BreakByAccess>
+          <BreakIfRCount>1</BreakIfRCount>
+          <Filename>..\HARDWARE\I2C.c</Filename>
+          <ExecCommand></ExecCommand>
+          <Expression>\\Template\../HARDWARE/I2C.c\375</Expression>
+        </Bp>
+        <Bp>
+          <Number>3</Number>
+          <Type>0</Type>
+          <LineNumber>380</LineNumber>
+          <EnabledFlag>1</EnabledFlag>
+          <Address>0</Address>
+          <ByteObject>0</ByteObject>
+          <HtxType>0</HtxType>
+          <ManyObjects>0</ManyObjects>
+          <SizeOfObject>0</SizeOfObject>
+          <BreakByAccess>0</BreakByAccess>
+          <BreakIfRCount>0</BreakIfRCount>
+          <Filename>..\HARDWARE\I2C.c</Filename>
+          <ExecCommand></ExecCommand>
+          <Expression></Expression>
+        </Bp>
+        <Bp>
+          <Number>4</Number>
+          <Type>0</Type>
+          <LineNumber>382</LineNumber>
+          <EnabledFlag>1</EnabledFlag>
+          <Address>0</Address>
+          <ByteObject>0</ByteObject>
+          <HtxType>0</HtxType>
+          <ManyObjects>0</ManyObjects>
+          <SizeOfObject>0</SizeOfObject>
+          <BreakByAccess>0</BreakByAccess>
+          <BreakIfRCount>0</BreakIfRCount>
+          <Filename>..\HARDWARE\I2C.c</Filename>
+          <ExecCommand></ExecCommand>
+          <Expression></Expression>
         </Bp>
       </Breakpoint>
       <WatchWindow1>
